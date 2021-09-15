@@ -10,15 +10,39 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build-win": "electron-packager . approval-system --platform win32 --out ./dist"
+    "build-win": "electron-packager . approval-system --platform win32 --out ./build",
+    "build": "electron-builder build --mac --win --publish never",
+    "deploy": "electron-builder build --win --publish always",
+    "build-test": "electron-builder"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^14.0.0",
-    "electron-builder": "^22.11.7",
     "electron-packager": "^15.4.0",
     "electron-updater": "^4.3.9",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "electron": "^14.0.1",
+    "electron-builder": "^22.11.7"
+  },
+  "build": {
+    "appId": "com.electronseminal.app",
+    "productName": "task-manager",
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility"
+    },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false
+    }
   }
 }

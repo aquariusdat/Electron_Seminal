@@ -42,11 +42,11 @@ const createMainWindow = () => {
 
   menuApplication = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menuApplication);
-};
 
-mainWindow.once("ready-to-show", () => {
-  autoUpdater.checkForUpdatesAndNotify();
-});
+  mainWindow.once("ready-to-show", () => {
+    autoUpdater.checkForUpdatesAndNotify();
+  });
+};
 
 let menuTemplate = [
   {
