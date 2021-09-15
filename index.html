@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./public/css/index.css" />
+    <title>Task App</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1 class="task-header">Task application</h1>
+      <div class="task-row">
+        <button id="add-item"><span>Add new a task</span></button>
+      </div>
+      <ul class="task-list"></ul>
+    </div>
+    <script>
+      // Initialize electron
+      const electron = require("electron");
+      const { ipcRenderer, shell } = electron;
+
+      console.log("--------");
+      console.log(process.getCPUUsage());
+      console.log("--------");
+      console.log(process.getSystemMemoryInfo());
+      console.log("--------");
+      console.log(process.getSystemVersion());
+      // Global variables
+      let data = [
+        {
+          taskID: "44ea4105-f50c-4f09-af28-1f816993079b",
+          taskName: "Go to school",
+        },
+        {
+          taskID: "709ff836-64c2-4191-bfa8-6368f49a884e",
+          taskName: "Do homework",
+        },
+        {
+          taskID: "b9c44d82-e263-4e72-9a41-1d8ed5be1b07",
+          taskName: "Feed the cat",
+        },
+      ];
+      const btnDelete = document.querySelectorAll(".delete-item");
+      const btnAdd = document.querySelector("#add-item");
+      let taskList = document.querySelector(".wrapper .task-list");
+      const taskItems = document.querySelectorAll(
+        ".wrapper .task-list .task-list__item"
+      );
+
+      // Handle functions
+      const handleBindingData = (array) => {
+        data = array;
+        taskList.innerHTML = "";
+        const html = array.map((task) => {
+          return `<li
+          class="task-list__item"
+          data-id="${task.taskID}"
+        >
+          <span>${task.taskName}</span>
+          <a href="#" class="delete-item" onclick="handleDeleteTaskItem(event)">X</a>
+        </li>`;
+        });
+        taskList.insertAdjacentHTML("afterbegin", html.join(""));
+      };
+      handleBindingData(data);
+
+      // delete
+      const handleDeleteTaskItem = (event) => {
+        const currentTarget = event.currentTarget;
+        // const taskID = event.currentTarget.getAttribute('data-id');
+        // const itemDelelte = document.querySelector(`[data-id="${taskID}"]`);
+        const taskID = currentTarget.parentNode.attributes["data-id"].value;
+
+        const newArray = data.filter((task) => task.taskID !== taskID);
+        handleBindingData(newArray);
+      };
+
+      // add
+      const handleAddTaskItem = (event) => {
+        ipcRenderer.send("task-add");
+      };
+
+      ipcRenderer.on("submit-task", async (event, args) => {
+        const { taskID, taskName } = args;
+        data.push({
+          taskID,
+          taskName,
+        });
+
+        handleBindingData(data);
+      });
+
+      btnAdd.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        handleAddTaskItem(e);
+      });
+    </script>
+  </body>
+</html>

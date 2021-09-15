@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>Add a new task</p>
+    <input type="text" id="name-task">
+    <button id="submit">Submit</button>
+    <script>
+        const electron = require("electron");
+        const { ipcRenderer } = electron;
+
+        const btnSubmit = document.querySelector('#submit');
+        const taskName = document.querySelector('#name-task');
+
+        const handleSubmit = () => {
+            ipcRenderer.send('submit-task',taskName.value);
+        }
+
+        btnSubmit.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            handleSubmit();
+        })
+    </script>
+</body>
+</html>
